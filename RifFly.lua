@@ -79,11 +79,20 @@ local function startFly()
 
 		local horizontalVel = Vector3.zero
 		if moveDir.Magnitude > 0 then
-			local forward = Vector3.new(camLook.X, camLook.Y, camLook.Z)
-			if forward.Magnitude > 0 then
-				forward = forward.Unit
+			local flatLook = Vector3.new(camLook.X, 0, camLook.Z)
+			if flatLook.Magnitude > 0 then
+				flatLook = flatLook.Unit
 			end
-			local inputVec = (rightVec * moveDir.X) + (forward * moveDir.Z)
+
+			local flatRight = Vector3.new(rightVec.X, 0, rightVec.Z)
+			if flatRight.Magnitude > 0 then
+				flatRight = flatRight.Unit
+			end
+
+			local forwardAmount = moveDir:Dot(flatLook)
+			local rightAmount = moveDir:Dot(flatRight)
+
+			local inputVec = (flatLook * forwardAmount) + (flatRight * rightAmount)
 			if inputVec.Magnitude > 0 then
 				horizontalVel = inputVec.Unit * flySpeed
 			end
